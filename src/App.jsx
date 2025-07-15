@@ -168,7 +168,6 @@ const HeroSection = ({ userId }) => {
 // --- Photo Gallery Component ---
 const PhotoGallery = () => {
   const photos = [
-    'https://lh3.googleusercontent.com/d/1tGaySuh25Zdl-fPVXqJn0j31ALF280Bx',
     'https://lh3.googleusercontent.com/d/1VeOz10dX-dQI02aDx13oWS1z_tvtBgbN',
     'https://lh3.googleusercontent.com/d/1-np-AQ9X-dw36VwGoWeZujm6Oh7JvMMa',
     'https://lh3.googleusercontent.com/d/1u621T8l5MzSqtterd-Jj64VRoSF1uzA3',
@@ -180,7 +179,9 @@ const PhotoGallery = () => {
     'https://lh3.googleusercontent.com/d/1ophdrf7A6v7itSwjtgdTLTXvt4e-s9_Z',
     'https://lh3.googleusercontent.com/d/1N9wwWtheZPxPsh1SSNt1vrapamk-SXQd',
     'https://lh3.googleusercontent.com/d/1mXytV4M7XPxfCh2LnTBsS9JiMX-guGLj',
-    'https://lh3.googleusercontent.com/d/17g3IvCPVpvWt14HBQCMfWvfyuBimDi4B'
+    'https://lh3.googleusercontent.com/d/17g3IvCPVpvWt14HBQCMfWvfyuBimDi4B',
+    'https://lh3.googleusercontent.com/d/10Ort1I0lsWINsZ4292RK5HiTrLpQL2-Z',
+    'https://lh3.googleusercontent.com/d/1fJTlBYJvVrIb1mQ2Cp5qHCH-Ml_MpRC8'
   ];
 
   return (
