@@ -169,11 +169,18 @@ const HeroSection = ({ userId }) => {
 const PhotoGallery = () => {
   const photos = [
     'https://lh3.googleusercontent.com/d/1tGaySuh25Zdl-fPVXqJn0j31ALF280Bx',
-    'https://placehold.co/800x600/ADD8E6/000080?text=Dynamic+Movement+2',
-    'https://placehold.co/800x600/98FB98/228B22?text=Expressive+Mudras+3',
-    'https://placehold.co/800x600/FFB6C1/800000?text=Stage+Presence+4',
-    'https://placehold.co/800x600/DDA0DD/4B0082?text=Intricate+Footwork+5',
-    'https://placehold.co/800x600/87CEEB/4682B4?text=Captivating+Smile+6',
+    'https://lh3.googleusercontent.com/d/1VeOz10dX-dQI02aDx13oWS1z_tvtBgbN',
+    'https://lh3.googleusercontent.com/d/1-np-AQ9X-dw36VwGoWeZujm6Oh7JvMMa,
+    'https://lh3.googleusercontent.com/d/1u621T8l5MzSqtterd-Jj64VRoSF1uzA3',
+    'https://lh3.googleusercontent.com/d/1UNDhwlyFNQnEGgJu--IwAIjwS6AWTknu',
+    'https://lh3.googleusercontent.com/d/15SK3ZQdsnS7Uh3xP5EmeC7QAU3lvN5Y6',
+    'https://lh3.googleusercontent.com/d/1Ko22kj2vGyFG754PSNlMzw7rxXI158Ix',
+    'https://lh3.googleusercontent.com/d/17BdGJYJ4tVdYE5I_EJNfXdaxzz7o06lZ',
+    'https://lh3.googleusercontent.com/d/1RXADfURqfbN0buJJiSRUJoLLcApVC2ay',
+    'https://lh3.googleusercontent.com/d/1ophdrf7A6v7itSwjtgdTLTXvt4e-s9_Z',
+    'https://lh3.googleusercontent.com/d/1N9wwWtheZPxPsh1SSNt1vrapamk-SXQd',
+    'https://lh3.googleusercontent.com/d/1mXytV4M7XPxfCh2LnTBsS9JiMX-guGLj',
+    'https://lh3.googleusercontent.com/d/17g3IvCPVpvWt14HBQCMfWvfyuBimDi4B'
   ];
 
   return (
