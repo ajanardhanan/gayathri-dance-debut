@@ -121,7 +121,7 @@ const Navbar = ({ setCurrentPage }) => {
     <nav className="bg-gradient-to-r from-purple-700 to-indigo-800 p-4 shadow-lg">
       <div className="container mx-auto flex flex-col md:flex-row justify-between items-center">
         <h1 className="text-white text-3xl font-extrabold mb-2 md:mb-0">
-          <span className="font-serif italic">Ananya's Arangetram</span>
+          <span className="font-serif italic">Gayathri's Arangetram</span>
         </h1>
         <div className="flex flex-wrap justify-center md:space-x-6 space-x-2">
           <NavLink onClick={() => setCurrentPage('home')}>Home</NavLink>
@@ -148,11 +148,11 @@ const NavLink = ({ children, onClick }) => (
 const HeroSection = ({ userId }) => {
   return (
     <section className="relative h-screen bg-cover bg-center flex items-center justify-center text-white"
-      style={{ backgroundImage: "url('https://placehold.co/1920x1080/6A0DAD/FFFFFF?text=Ananya%27s+Dance+Debut')" }}>
+      style={{ backgroundImage: "url('https://placehold.co/1920x1080/6A0DAD/FFFFFF?text=Gayathri%27s+Dance+Debut')" }}>
       <div className="absolute inset-0 bg-black opacity-60"></div>
       <div className="relative z-10 text-center p-6 rounded-lg bg-opacity-70 bg-purple-900 shadow-2xl">
         <h2 className="text-5xl md:text-7xl font-extrabold mb-4 animate-fade-in-up">
-          Ananya's Arangetram
+          Gayathri's Arangetram
         </h2>
         <p className="text-xl md:text-2xl font-light mb-6 animate-fade-in-up delay-200">
           A Celebration of Grace, Dedication, and Art
@@ -239,7 +239,7 @@ const StoriesList = ({ setCurrentPage, setSelectedStoryId }) => {
   return (
     <section className="py-16 bg-gradient-to-br from-purple-50 to-indigo-100">
       <div className="container mx-auto px-4">
-        <h2 className="text-4xl font-bold text-center text-purple-800 mb-12">Ananya's Dance Stories</h2>
+        <h2 className="text-4xl font-bold text-center text-purple-800 mb-12">Gayathri's Dance Stories</h2>
         {stories.length === 0 ? (
           <p className="text-center text-gray-600 text-lg">No stories yet. Check back soon!</p>
         ) : (
@@ -382,7 +382,7 @@ const StoryDetail = ({ storyId, setCurrentPage }) => {
           <h2 className="text-4xl font-bold text-purple-800 mb-4">{story.title}</h2>
           <p className="text-gray-700 leading-relaxed mb-6 whitespace-pre-wrap">{story.content}</p>
           <p className="text-sm text-gray-500 italic">
-            Published by Ananya on {story.createdAt?.toDate().toLocaleDateString() || 'N/A'}
+            Published by Gayathri on {story.createdAt?.toDate().toLocaleDateString() || 'N/A'}
           </p>
         </div>
 
@@ -788,7 +788,7 @@ My parents have been incredibly supportive, driving me to classes, helping me wi
       {
         name: "Priya Sharma",
         email: "priya.s@example.com",
-        message: "Ananya, your dedication shines through! Wishing you all the best for your debut.",
+        message: "Gayathri, your dedication shines through! Wishing you all the best for your debut.",
         createdAt: serverTimestamp(),
         userId: 'sample-user-1'
       },
@@ -805,7 +805,7 @@ My parents have been incredibly supportive, driving me to classes, helping me wi
     const sampleCommentsStory1 = [
       {
         storyId: 'sample-story-1',
-        commentText: "This is so inspiring, Ananya! Keep dancing!",
+        commentText: "This is so inspiring, Gayathri! Keep dancing!",
         commenterName: "Auntie Meena",
         createdAt: serverTimestamp(),
         userId: 'sample-user-3'
@@ -873,7 +873,7 @@ My parents have been incredibly supportive, driving me to classes, helping me wi
       </main>
       <footer className="bg-gray-800 text-white py-6 text-center text-sm">
         <div className="container mx-auto px-4">
-          <p>&copy; {new Date().getFullYear()} Ananya's Dance Debut. All rights reserved.</p>
+          <p>&copy; {new Date().getFullYear()} Gayathri's Dance Debut. All rights reserved.</p>
           <p className="mt-2">Built with ❤️ for a beautiful journey.</p>
         </div>
       </footer>
