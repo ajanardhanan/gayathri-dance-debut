@@ -39,22 +39,28 @@ const FirebaseProvider = ({ children }) => {
     const unsubscribe = onAuthStateChanged(firebaseAuth, async (user) => {
       if (user) {
         setUserId(user.uid);
+        console.log("Firebase Auth: User signed in, UID:", user.uid);
       } else {
         // Sign in anonymously if no user is logged in and no custom token is provided
         try {
           // Use __initial_auth_token if available, otherwise sign in anonymously
           if (typeof __initial_auth_token !== 'undefined' && __initial_auth_token) {
             await signInWithCustomToken(firebaseAuth, __initial_auth_token);
+            console.log("Firebase Auth: Signed in with custom token.");
           } else {
             await signInAnonymously(firebaseAuth);
+            console.log("Firebase Auth: Signed in anonymously.");
           }
         } catch (error) {
           console.error("Error signing in:", error);
           // Fallback to a random UUID if anonymous sign-in fails
-          setUserId(crypto.randomUUID());
+          const newUuid = crypto.randomUUID();
+          setUserId(newUuid);
+          console.log("Firebase Auth: Anonymous sign-in failed, using random UUID:", newUuid);
         }
       }
       setIsAuthReady(true); // Auth is ready after initial check
+      console.log("Firebase Auth: isAuthReady set to true.");
     });
 
     return () => unsubscribe(); // Cleanup auth listener on unmount
@@ -121,7 +127,7 @@ const Navbar = ({ setCurrentPage }) => {
     <nav className="bg-gradient-to-r from-purple-700 to-indigo-800 p-4 shadow-lg">
       <div className="container mx-auto flex flex-col md:flex-row justify-between items-center">
         <h1 className="text-white text-3xl font-extrabold mb-2 md:mb-0">
-          <span className="font-serif italic">Gayathri's Arangetram</span>
+          <span className="font-serif italic">Ananya's Arangetram</span>
         </h1>
         <div className="flex flex-wrap justify-center md:space-x-6 space-x-2">
           <NavLink onClick={() => setCurrentPage('home')}>Home</NavLink>
@@ -148,11 +154,11 @@ const NavLink = ({ children, onClick }) => (
 const HeroSection = ({ userId }) => {
   return (
     <section className="relative h-screen bg-cover bg-center flex items-center justify-center text-white"
-      style={{ backgroundImage: "url('https://placehold.co/1920x1080/6A0DAD/FFFFFF?text=Gayathri%27s+Dance+Debut')" }}>
+      style={{ backgroundImage: "url('https://placehold.co/1920x1080/6A0DAD/FFFFFF?text=Ananya%27s+Dance+Debut')" }}>
       <div className="absolute inset-0 bg-black opacity-60"></div>
       <div className="relative z-10 text-center p-6 rounded-lg bg-opacity-70 bg-purple-900 shadow-2xl">
         <h2 className="text-5xl md:text-7xl font-extrabold mb-4 animate-fade-in-up">
-          Gayathri's Arangetram
+          Ananya's Arangetram
         </h2>
         <p className="text-xl md:text-2xl font-light mb-6 animate-fade-in-up delay-200">
           A Celebration of Grace, Dedication, and Art
@@ -216,7 +222,11 @@ const StoriesList = ({ setCurrentPage, setSelectedStoryId }) => {
   const [error, setError] = useState(null);
 
   useEffect(() => {
-    if (!db || !isAuthReady) return;
+    if (!db || !isAuthReady) {
+      console.log("StoriesList: DB or Auth not ready. Skipping story fetch.");
+      return;
+    }
+    console.log("StoriesList: Fetching stories...");
 
     const appId = typeof __app_id !== 'undefined' ? __app_id : 'default-app-id';
     const storiesCollectionRef = collection(db, `artifacts/${appId}/public/data/stories`);
@@ -230,6 +240,7 @@ const StoriesList = ({ setCurrentPage, setSelectedStoryId }) => {
         }));
         setStories(fetchedStories);
         setLoading(false);
+        console.log("StoriesList: Stories fetched successfully.");
       },
       (err) => {
         console.error("Error fetching stories:", err);
@@ -247,7 +258,7 @@ const StoriesList = ({ setCurrentPage, setSelectedStoryId }) => {
   return (
     <section className="py-16 bg-gradient-to-br from-purple-50 to-indigo-100">
       <div className="container mx-auto px-4">
-        <h2 className="text-4xl font-bold text-center text-purple-800 mb-12">Gayathri's Dance Stories</h2>
+        <h2 className="text-4xl font-bold text-center text-purple-800 mb-12">Ananya's Dance Stories</h2>
         {stories.length === 0 ? (
           <p className="text-center text-gray-600 text-lg">No stories yet. Check back soon!</p>
         ) : (
@@ -390,7 +401,7 @@ const StoryDetail = ({ storyId, setCurrentPage }) => {
           <h2 className="text-4xl font-bold text-purple-800 mb-4">{story.title}</h2>
           <p className="text-gray-700 leading-relaxed mb-6 whitespace-pre-wrap">{story.content}</p>
           <p className="text-sm text-gray-500 italic">
-            Published by Gayathri on {story.createdAt?.toDate().toLocaleDateString() || 'N/A'}
+            Published by Ananya on {story.createdAt?.toDate().toLocaleDateString() || 'N/A'}
           </p>
         </div>
 
@@ -582,7 +593,11 @@ const Feedback = () => {
   const [messageBox, setMessageBox] = useState({ show: false, message: '', type: 'alert', onConfirm: null });
 
   useEffect(() => {
-    if (!db || !isAuthReady) return;
+    if (!db || !isAuthReady) {
+      console.log("Feedback: DB or Auth not ready. Skipping feedback fetch.");
+      return;
+    }
+    console.log("Feedback: Fetching feedback...");
 
     const appId = typeof __app_id !== 'undefined' ? __app_id : 'default-app-id';
     const feedbackCollectionRef = collection(db, `artifacts/${appId}/public/data/feedback`);
@@ -595,6 +610,7 @@ const Feedback = () => {
           ...doc.data()
         }));
         setFeedbackList(fetchedFeedback);
+        console.log("Feedback: Feedback fetched successfully.");
       },
       (err) => {
         console.error("Error fetching feedback:", err);
@@ -734,22 +750,26 @@ const MainAppContent = () => {
   // Function to add sample data (for initial setup)
   const addSampleData = async () => {
     if (!isAuthReady || !userId || !db) { // Ensure db is also available
-      console.log("Auth not ready, userId not available, or db not initialized for sample data.");
+      console.log("Sample data: Auth not ready, userId not available, or db not initialized. Skipping sample data addition.");
       return;
     }
+    console.log("Sample data: Attempting to add sample data. isAuthReady:", isAuthReady, "userId:", userId, "db:", !!db);
 
     const appId = typeof __app_id !== 'undefined' ? __app_id : 'default-app-id';
 
     // Check if stories already exist to prevent duplicates on refresh
     const storiesCollectionRef = collection(db, `artifacts/${appId}/public/data/stories`);
-    const storiesSnapshot = await getDoc(doc(storiesCollectionRef, 'sample-story-1')); // Check for a specific sample story
+    // To reliably check if *any* sample data exists, we should query for one of the sample stories by its ID.
+    // However, getDoc(doc(storiesCollectionRef, 'sample-story-1')) will only work if 'sample-story-1' exists.
+    // If the user has deleted it, it will re-add. This is acceptable for sample data.
+    const storiesSnapshot = await getDoc(doc(storiesCollectionRef, 'sample-story-1'));
 
     if (storiesSnapshot.exists()) {
-      console.log("Sample data already exists. Skipping insertion.");
+      console.log("Sample data: Sample data already exists. Skipping insertion.");
       return;
     }
 
-    console.log("Adding sample data...");
+    console.log("Sample data: Adding sample data...");
 
     // Sample Stories
     const sampleStories = [
@@ -796,7 +816,7 @@ My parents have been incredibly supportive, driving me to classes, helping me wi
       {
         name: "Priya Sharma",
         email: "priya.s@example.com",
-        message: "Gayathri, your dedication shines through! Wishing you all the best for your debut.",
+        message: "Ananya, your dedication shines through! Wishing you all the best for your debut.",
         createdAt: serverTimestamp(),
         userId: 'sample-user-1'
       },
@@ -813,7 +833,7 @@ My parents have been incredibly supportive, driving me to classes, helping me wi
     const sampleCommentsStory1 = [
       {
         storyId: 'sample-story-1',
-        commentText: "This is so inspiring, Gayathri! Keep dancing!",
+        commentText: "This is so inspiring, Ananya! Keep dancing!",
         commenterName: "Auntie Meena",
         createdAt: serverTimestamp(),
         userId: 'sample-user-3'
@@ -842,9 +862,9 @@ My parents have been incredibly supportive, driving me to classes, helping me wi
         const commentsCollectionRef = collection(db, `artifacts/${appId}/public/data/comments`);
         await addDoc(commentsCollectionRef, comment);
       }
-      console.log("Sample data added successfully!");
+      console.log("Sample data: Sample data added successfully!");
     } catch (error) {
-      console.error("Error adding sample data:", error);
+      console.error("Sample data: Error adding sample data:", error);
     }
   };
 
@@ -881,7 +901,7 @@ My parents have been incredibly supportive, driving me to classes, helping me wi
       </main>
       <footer className="bg-gray-800 text-white py-6 text-center text-sm">
         <div className="container mx-auto px-4">
-          <p>&copy; {new Date().getFullYear()} Gayathri's Dance Debut. All rights reserved.</p>
+          <p>&copy; {new Date().getFullYear()} Ananya's Dance Debut. All rights reserved.</p>
           <p className="mt-2">Built with ❤️ for a beautiful journey.</p>
         </div>
       </footer>
