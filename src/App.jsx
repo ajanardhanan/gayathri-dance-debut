@@ -168,7 +168,7 @@ const HeroSection = ({ userId }) => {
 // --- Photo Gallery Component ---
 const PhotoGallery = () => {
   const photos = [
-    'https://drive.google.com/file/d/1tGaySuh25Zdl-fPVXqJn0j31ALF280Bx/view?usp=drive_link?text=Graceful+Pose+1',
+    'https://lh3.googleusercontent.com/d/1tGaySuh25Zdl-fPVXqJn0j31ALF280Bx',
     'https://placehold.co/800x600/ADD8E6/000080?text=Dynamic+Movement+2',
     'https://placehold.co/800x600/98FB98/228B22?text=Expressive+Mudras+3',
     'https://placehold.co/800x600/FFB6C1/800000?text=Stage+Presence+4',
