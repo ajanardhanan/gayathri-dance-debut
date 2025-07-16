@@ -20,8 +20,8 @@ const FirebaseProvider = ({ children }) => {
     // const canvasAppId = typeof __app_id !== 'undefined' ? __app_id : 'default-app-id';
     // const canvasInitialAuthToken = typeof __initial_auth_token !== 'undefined' ? __initial_auth_token : null;
 
-    const firebaseConfigString = process.env.VITE_FIREBASE_CONFIG;
-    const appId = process.env.VITE_APP_ID;
+    const firebaseConfigString = import.meta.env.VITE_FIREBASE_CONFIG;
+    const appId = import.meta.env.VITE_APP_ID;
     // const initialAuthToken = canvasInitialAuthToken; // No process.env for this as it's Canvas specific
 
     let firebaseConfig = null;
