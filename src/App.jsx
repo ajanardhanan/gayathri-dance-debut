@@ -27,7 +27,7 @@ const FirebaseProvider = ({ children }) => {
     let firebaseConfig = null;
     if (firebaseConfigString) {
       try {
-	console.error("Not an actual error. About to parse Firebase config string");
+	console.error("Not an actual errorr. About to parse Firebase config string");
         firebaseConfig = JSON.parse(firebaseConfigString);
       } catch (e) {
         console.error("Error parsing Firebase config string:", e);
