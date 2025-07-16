@@ -20,8 +20,8 @@ const FirebaseProvider = ({ children }) => {
     // const canvasAppId = typeof __app_id !== 'undefined' ? __app_id : 'default-app-id';
     // const canvasInitialAuthToken = typeof __initial_auth_token !== 'undefined' ? __initial_auth_token : null;
 
-    const firebaseConfigString = process.env.REACT_APP_FIREBASE_CONFIG;
-    const appId = process.env.REACT_APP_APP_ID;
+    const firebaseConfigString = process.env.VITE_FIREBASE_CONFIG;
+    const appId = process.env.VITE_APP_ID;
     // const initialAuthToken = canvasInitialAuthToken; // No process.env for this as it's Canvas specific
 
     let firebaseConfig = null;
@@ -36,7 +36,7 @@ const FirebaseProvider = ({ children }) => {
     }
 
     if (!firebaseConfig) {
-      console.error("Firebase config not found. Please ensure REACT_APP_FIREBASE_CONFIG is set in Vercel environment variables.");
+      console.error("Firebase config not found. Please ensure VITE_FIREBASE_CONFIG is set in Vercel environment variables.");
       return;
     }
 
