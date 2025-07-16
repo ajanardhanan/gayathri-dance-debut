@@ -15,15 +15,27 @@ const FirebaseProvider = ({ children }) => {
   const [isAuthReady, setIsAuthReady] = useState(false); // New state to track auth readiness
 
   useEffect(() => {
-    // Check if firebaseConfig and appId are defined globally by the Canvas environment
-    const firebaseConfig = typeof __firebase_config !== 'undefined'
-      ? JSON.parse(__firebase_config)
-      : null;
-    // appId is used in collection paths, so it's defined here for consistency
-    const appId = typeof __app_id !== 'undefined' ? __app_id : 'default-app-id';
+    // --- FIX: Prioritize Canvas global variables first, then process.env for Vercel ---
+    const canvasFirebaseConfig = typeof __firebase_config !== 'undefined' ? __firebase_config : null;
+    const canvasAppId = typeof __app_id !== 'undefined' ? __app_id : 'default-app-id';
+    const canvasInitialAuthToken = typeof __initial_auth_token !== 'undefined' ? __initial_auth_token : null;
+
+    const firebaseConfigString = canvasFirebaseConfig || process.env.REACT_APP_FIREBASE_CONFIG;
+    const appId = canvasAppId || process.env.REACT_APP_APP_ID;
+    const initialAuthToken = canvasInitialAuthToken; // No process.env for this as it's Canvas specific
+
+    let firebaseConfig = null;
+    if (firebaseConfigString) {
+      try {
+        firebaseConfig = JSON.parse(firebaseConfigString);
+      } catch (e) {
+        console.error("Error parsing Firebase config string:", e);
+        firebaseConfig = null;
+      }
+    }
 
     if (!firebaseConfig) {
-      console.error("Firebase config not found. Please ensure __firebase_config is defined.");
+      console.error("Firebase config not found. Please ensure REACT_APP_FIREBASE_CONFIG is set in Vercel environment variables or __firebase_config is defined in Canvas.");
       return;
     }
 
@@ -43,13 +55,13 @@ const FirebaseProvider = ({ children }) => {
       } else {
         // Sign in anonymously if no user is logged in and no custom token is provided
         try {
-          // Use __initial_auth_token if available, otherwise sign in anonymously
-          if (typeof __initial_auth_token !== 'undefined' && __initial_auth_token) {
-            await signInWithCustomToken(firebaseAuth, __initial_auth_token);
-            console.log("Firebase Auth: Signed in with custom token.");
+          // Use initialAuthToken if available (for Canvas), otherwise sign in anonymously
+          if (initialAuthToken) {
+            await signInWithCustomToken(firebaseAuth, initialAuthToken);
+            console.log("Firebase Auth: Signed in with custom token (Canvas).");
           } else {
             await signInAnonymously(firebaseAuth);
-            console.log("Firebase Auth: Signed in anonymously.");
+            console.log("Firebase Auth: Signed in anonymously (Vercel/Local).");
           }
         } catch (error) {
           console.error("Error signing in:", error);
@@ -174,20 +186,12 @@ const HeroSection = ({ userId }) => {
 // --- Photo Gallery Component ---
 const PhotoGallery = () => {
   const photos = [
-    'https://lh3.googleusercontent.com/d/1VeOz10dX-dQI02aDx13oWS1z_tvtBgbN',
-    'https://lh3.googleusercontent.com/d/1-np-AQ9X-dw36VwGoWeZujm6Oh7JvMMa',
-    'https://lh3.googleusercontent.com/d/1u621T8l5MzSqtterd-Jj64VRoSF1uzA3',
-    'https://lh3.googleusercontent.com/d/1UNDhwlyFNQnEGgJu--IwAIjwS6AWTknu',
-    'https://lh3.googleusercontent.com/d/15SK3ZQdsnS7Uh3xP5EmeC7QAU3lvN5Y6',
-    'https://lh3.googleusercontent.com/d/1Ko22kj2vGyFG754PSNlMzw7rxXI158Ix',
-    'https://lh3.googleusercontent.com/d/17BdGJYJ4tVdYE5I_EJNfXdaxzz7o06lZ',
-    'https://lh3.googleusercontent.com/d/1RXADfURqfbN0buJJiSRUJoLLcApVC2ay',
-    'https://lh3.googleusercontent.com/d/1ophdrf7A6v7itSwjtgdTLTXvt4e-s9_Z',
-    'https://lh3.googleusercontent.com/d/1N9wwWtheZPxPsh1SSNt1vrapamk-SXQd',
-    'https://lh3.googleusercontent.com/d/1mXytV4M7XPxfCh2LnTBsS9JiMX-guGLj',
-    'https://lh3.googleusercontent.com/d/17g3IvCPVpvWt14HBQCMfWvfyuBimDi4B',
-    'https://lh3.googleusercontent.com/d/10Ort1I0lsWINsZ4292RK5HiTrLpQL2-Z',
-    'https://lh3.googleusercontent.com/d/1fJTlBYJvVrIb1mQ2Cp5qHCH-Ml_MpRC8'
+    'https://placehold.co/800x600/FFD700/8B4513?text=Graceful+Pose+1',
+    'https://placehold.co/800x600/ADD8E6/000080?text=Dynamic+Movement+2',
+    'https://placehold.co/800x600/98FB98/228B22?text=Expressive+Mudras+3',
+    'https://placehold.co/800x600/FFB6C1/800000?text=Stage+Presence+4',
+    'https://placehold.co/800x600/DDA0DD/4B0082?text=Intricate+Footwork+5',
+    'https://placehold.co/800x600/87CEEB/4682B4?text=Captivating+Smile+6',
   ];
 
   return (
@@ -228,7 +232,8 @@ const StoriesList = ({ setCurrentPage, setSelectedStoryId }) => {
     }
     console.log("StoriesList: Fetching stories...");
 
-    const appId = typeof __app_id !== 'undefined' ? __app_id : 'default-app-id';
+    // Determine appId based on environment
+    const appId = typeof __app_id !== 'undefined' ? __app_id : process.env.REACT_APP_APP_ID || 'default-app-id';
     const storiesCollectionRef = collection(db, `artifacts/${appId}/public/data/stories`);
     const q = query(storiesCollectionRef, orderBy('createdAt', 'desc'));
 
@@ -309,7 +314,8 @@ const StoryDetail = ({ storyId, setCurrentPage }) => {
   useEffect(() => {
     if (!db || !isAuthReady || !storyId) return;
 
-    const appId = typeof __app_id !== 'undefined' ? __app_id : 'default-app-id';
+    // Determine appId based on environment
+    const appId = typeof __app_id !== 'undefined' ? __app_id : process.env.REACT_APP_APP_ID || 'default-app-id';
 
     // Fetch story details
     const storyDocRef = doc(db, `artifacts/${appId}/public/data/stories`, storyId);
@@ -360,7 +366,8 @@ const StoryDetail = ({ storyId, setCurrentPage }) => {
     }
 
     try {
-      const appId = typeof __app_id !== 'undefined' ? __app_id : 'default-app-id';
+      // Determine appId based on environment
+      const appId = typeof __app_id !== 'undefined' ? __app_id : process.env.REACT_APP_APP_ID || 'default-app-id';
       await addDoc(collection(db, `artifacts/${appId}/public/data/comments`), {
         storyId: storyId,
         commentText: newComment,
@@ -395,7 +402,7 @@ const StoryDetail = ({ storyId, setCurrentPage }) => {
           <img
             src={story.imageUrl || 'https://placehold.co/800x500/DDA0DD/4B0082?text=Story+Image'}
             alt={story.title}
-            className="w-full h-80 object-cover rounded-lg mb-6 shadow-md"
+            className="w-full h-80 object-cover"
             onError={(e) => { e.target.onerror = null; e.target.src = 'https://placehold.co/800x500/CCCCCC/000000?text=Image+Error'; }}
           />
           <h2 className="text-4xl font-bold text-purple-800 mb-4">{story.title}</h2>
@@ -492,7 +499,8 @@ const AddStoryForm = () => {
 
     setLoading(true);
     try {
-      const appId = typeof __app_id !== 'undefined' ? __app_id : 'default-app-id';
+      // Determine appId based on environment
+      const appId = typeof __app_id !== 'undefined' ? __app_id : process.env.REACT_APP_APP_ID || 'default-app-id';
       await addDoc(collection(db, `artifacts/${appId}/public/data/stories`), {
         title,
         content,
@@ -599,7 +607,8 @@ const Feedback = () => {
     }
     console.log("Feedback: Fetching feedback...");
 
-    const appId = typeof __app_id !== 'undefined' ? __app_id : 'default-app-id';
+    // Determine appId based on environment
+    const appId = typeof __app_id !== 'undefined' ? __app_id : process.env.REACT_APP_APP_ID || 'default-app-id';
     const feedbackCollectionRef = collection(db, `artifacts/${appId}/public/data/feedback`);
     const q = query(feedbackCollectionRef, orderBy('createdAt', 'desc'));
 
@@ -630,7 +639,8 @@ const Feedback = () => {
 
     setLoading(true);
     try {
-      const appId = typeof __app_id !== 'undefined' ? __app_id : 'default-app-id';
+      // Determine appId based on environment
+      const appId = typeof __app_id !== 'undefined' ? __app_id : process.env.REACT_APP_APP_ID || 'default-app-id';
       await addDoc(collection(db, `artifacts/${appId}/public/data/feedback`), {
         name,
         email,
@@ -755,7 +765,8 @@ const MainAppContent = () => {
     }
     console.log("Sample data: Attempting to add sample data. isAuthReady:", isAuthReady, "userId:", userId, "db:", !!db);
 
-    const appId = typeof __app_id !== 'undefined' ? __app_id : 'default-app-id';
+    // Determine appId based on environment
+    const appId = typeof __app_id !== 'undefined' ? __app_id : process.env.REACT_APP_APP_ID || 'default-app-id';
 
     // Check if stories already exist to prevent duplicates on refresh
     const storiesCollectionRef = collection(db, `artifacts/${appId}/public/data/stories`);
